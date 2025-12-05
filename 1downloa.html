@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وزارة ترفيه أنمي غولد | تقرير الملفات</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* ألوان الفخامة */
+            --brown-dark: #120a05; 
+            --brown-mid: #281b11; 
+            --gold: #FFD700; 
+            --gold-light: #FFE082;
+            --gold-shadow: rgba(255, 215, 0, 0.6);
+            --text-color: #fff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Cairo', sans-serif; 
+            background: radial-gradient(circle at center, var(--brown-mid) 0%, var(--brown-dark) 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* ====== الهيدر والختم (Report Header/Footer) ====== */
+        .report-header, .report-footer {
+            width: 90%;
+            max-width: 1000px;
+            text-align: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+
+        .report-header {
+            border-bottom: 2px solid var(--gold);
+            text-shadow: 0 0 5px var(--gold-shadow);
+        }
+
+        .report-header h1 {
+            color: var(--gold);
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 900;
+        }
+        
+        .report-header p {
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: var(--gold-light);
+            margin-top: 5px;
+        }
+
+        /* ====== منطقة التقرير الرئيسية (Main Content) ====== */
+        .report-container {
+            width: 90%;
+            max-width: 800px;
+            background: rgba(40, 27, 17, 0.85);
+            padding: 35px;
+            border: 1px solid var(--gold-shadow);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: var(--gold);
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            border-bottom: 1px dashed var(--gold-shadow);
+            padding-bottom: 8px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        /* ====== جدول البيانات (Data Table) ====== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+        }
+
+        .data-table th {
+            background-color: var(--brown-dark);
+            color: var(--gold);
+            font-weight: 700;
+            width: 30%; /* عرض ثابت للعنوان */
+        }
+        
+        .data-table td {
+            color: var(--gold-light);
+            font-family: 'VT323', monospace; /* استخدام خط الهاكرز هنا */
+            letter-spacing: 0.5px;
+        }
+
+        /* ====== زر التحميل ====== */
+        .download-btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background-color: var(--gold);
+            color: var(--brown-dark);
+            padding: 15px 30px;
+            text-decoration: none;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 900;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .download-btn:hover {
+            background-color: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+
+        /* ====== تذييل التقرير (Footer) ====== */
+        .report-footer {
+            font-size: 0.8rem;
+            color: var(--gold-shadow);
+            border-top: 1px solid var(--gold-shadow);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="report-header">
+        <h1>الواجهة الإدارية: تقرير الملف الرمزي (TAGIS-APK)</h1>
+        <p>مُعد ومُنقح بواسطة: وزارة ترفيه أنمي غولد</p>
+    </header>
+
+    <div class="report-container">
+        
+        <h2 class="section-title">بيانات المشروع والتطبيق</h2>
+        
+        <table class="data-table">
+            <tr>
+                <th>اسم الملف الرمزي</th>
+                <td>TAJIS-CORE_V2.0.1</td>
+            </tr>
+            <tr>
+                <th>المُعرف الفريد (ID)</th>
+                <td>app3841701-jiop8w</td>
+            </tr>
+            <tr>
+                <th>المطور الرئيسي</th>
+                <td>قسم CRD_TAGIS للاستخبارات</td>
+            </tr>
+            <tr>
+                <th>تاريخ المراجعة</th>
+                <td>5 ديسمبر 2025</td>
+            </tr>
+            <tr>
+                <th>حالة الملف</th>
+                <td style="color: #00FF41; text-shadow: 0 0 5px #00FF41;">SIGNED & APPROVED</td>
+            </tr>
+        </table>
+        
+        <h2 class="section-title">ملخص التطبيق</h2>
+
+        <div style="color: var(--gold-light); line-height: 1.8;">
+            <p>
+                هذا الملف يحوي التحديث الأخير لنظام الواجهة المحمولة لـ "قطاع تاجيس". يهدف التطبيق إلى توفير وصول آمن ومشفّر إلى البيانات المصدرية لـ "أنمي غولد" ضمن بيئة تشغيل مستقرة. يرجى الملاحظة أن الملف يخضع للمراقبة المستمرة، وأي محاولة لتفكيك الشفرة (Decompiling) ستؤدي إلى إغلاق حساب المستخدم بشكل دائم.
+            </p>
+            <p style="margin-top: 15px;">
+                <strong>الميزات الرئيسية:</strong> استقرار محسّن، بروتوكولات حماية جديدة، ودعم كامل للواجهة التفاعلية. يجب تنزيله فوراً وتثبيته على الجهاز المعتمد.
+            </p>
+        </div>
+
+        <div class="download-btn-container">
+            <a href="https://www.mediafire.com/file/u27h1wc6ylaklus/app3841701-jiop8w.apk/file" 
+               class="download-btn" target="_blank" rel="noopener noreferrer">
+               تحميل الملف المعتمد (APK)
+            </a>
+        </div>
+        
+    </div>
+
+    <footer class="report-footer">
+        © 2025 جميع الحقوق محفوظة لـ **وزارة ترفيه أنمي غولد** - إدارة المجمع الترفيهي.
+    </footer>
+
+</body>
+</html>
