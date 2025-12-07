@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد البطاقات الثابت</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 960px;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            font-weight: bold;
+        }
+        button:hover { background-color: #218838; }
+
+        /* حاوية البطاقة */
+        #card-container {
+            position: relative;
+            width: 960px;
+            height: 539px;
+            background-color: #333;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            transform-origin: top center; 
+        }
+
+        /* صورة الخلفية */
+        #bg-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 1;
+        }
+
+        /* العناصر الثابتة */
+        .fixed-element {
+            position: absolute;
+            z-index: 10;
+        }
+
+        /* تنسيق النصوص */
+        .card-text {
+            color: white; 
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            white-space: nowrap;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            line-height: 1;
+        }
+
+        /* تنسيق الصورة الشخصية */
+        #profile-wrapper {
+            border-radius: 50%;
+            overflow: hidden;
+            border: 6px solid #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            background-color: #ccc;
+            /* التمركز في المنتصف */
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+        }
+
+        #profile-pic {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* التجاوب مع الجوال (تصغير البطاقة للعرض فقط) */
+        @media (max-width: 980px) {
+            #card-container {
+                zoom: 0.35; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <h3>إدخال البيانات</h3>
+        <label>اسم المشارك:</label>
+        <input type="text" id="inp-name" placeholder="أدخل الاسم" oninput="updateCard()">
+        
+        <label>رقم المشارك:</label>
+        <input type="text" id="inp-number" placeholder="أدخل الرقم (مثلاً 123)" oninput="updateCard()" style="direction: ltr; text-align: right;">
+
+        <label>رفع الصورة الشخصية:</label>
+        <input type="file" id="inp-file" accept="image/*" onchange="uploadImage(event)">
+
+        <button onclick="downloadCard()">⬇️ تحميل البطاقة</button>
+    </div>
+
+    <div id="card-container">
+        <img src="Card.png" id="bg-image" alt="Background"> 
+
+        <div id="profile-wrapper" class="fixed-element">
+            <img id="profile-pic" src="" alt="" style="display: none;"> 
+        </div>
+
+        <div id="card-name" class="fixed-element card-text">
+            اسم المشارك
+        </div>
+
+        <div id="card-number" class="fixed-element card-text">
+            000
+        </div>
+    </div>
+
+<script>
+    /*
+    ======================================
+    مركز الإعدادات الثابتة: عدّل هذه القيم لتغيير تصميم البطاقة 
+    (الموقع، الحجم، النصوص الافتراضية)
+    ======================================
+    */
+    const DEFAULT_LAYOUT = {
+        // نصوص البطاقة الافتراضية
+        nameText: "اسم المشارك",
+        numText: "000",
+        
+        // إعدادات الاسم
+        nameX: "350px",    // الموقع الأفقي
+        nameY: "170px",    // الموقع العمودي
+        nameSize: "40px",  // حجم الخط
+        nameDirection: "rtl", // اتجاه النص
+
+        // إعدادات الرقم
+        numX: "114px",     // الموقع الأفقي
+        numY: "465px",     // الموقع العمودي
+        numSize: "50px",   // حجم الخط
+        
+        // إعدادات الصورة
+        imgX: "650px",     // الموقع الأفقي
+        imgY: "240px",     // الموقع العمودي
+        imgSize: "250px"   // العرض والارتفاع
+    };
+
+    function applyDefaultLayout() {
+        const layout = DEFAULT_LAYOUT;
+        
+        // تطبيق النصوص الافتراضية على حقول الإدخال والبطاقة
+        document.getElementById('inp-name').value = layout.nameText;
+        document.getElementById('card-name').innerText = layout.nameText;
+        
+        document.getElementById('inp-number').value = layout.numText;
+        document.getElementById('card-number').innerText = layout.numText;
+        
+        // تطبيق أنماط الاسم
+        const nameEl = document.getElementById('card-name');
+        nameEl.style.left = layout.nameX;
+        nameEl.style.top = layout.nameY;
+        nameEl.style.fontSize = layout.nameSize;
+        nameEl.style.direction = layout.nameDirection;
+        nameEl.style.textAlign = layout.nameDirection === 'rtl' ? 'right' : 'left'; 
+
+        // تطبيق أنماط الرقم
+        const numEl = document.getElementById('card-number');
+        numEl.style.left = layout.numX;
+        numEl.style.top = layout.numY;
+        numEl.style.fontSize = layout.numSize;
+
+        // تطبيق أنماط الصورة
+        const imgWrapper = document.getElementById('profile-wrapper');
+        imgWrapper.style.left = layout.imgX;
+        imgWrapper.style.top = layout.imgY;
+        imgWrapper.style.width = layout.imgSize;
+        imgWrapper.style.height = layout.imgSize;
+    }
+
+    function updateCard() {
+        // تحديث النصوص فقط من حقول الإدخال
+        const nameVal = document.getElementById('inp-name').value;
+        const numVal = document.getElementById('inp-number').value;
+
+        document.getElementById('card-name').innerText = nameVal || DEFAULT_LAYOUT.nameText;
+        document.getElementById('card-number').innerText = numVal || DEFAULT_LAYOUT.numText;
+    }
+
+    function uploadImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('profile-pic');
+                img.src = e.target.result;
+                img.style.display = 'block'; 
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    /*
+    ======================================
+    دالة تحميل البطاقة (Download Card) - تم التعديل عليها
+    ======================================
+    */
+    function downloadCard() {
+        const card = document.getElementById('card-container');
+        
+        // حفظ الأنماط الأصلية (للتجاوب مع الجوال)
+        const originalZoom = card.style.zoom;
+        const originalTransform = card.style.transform;
+        
+        // إلغاء التصغير مؤقتاً للحصول على دقة عالية
+        card.style.zoom = "1";
+        card.style.transform = "none";
+        
+        // استخدام html2canvas لتحويل العنصر إلى صورة
+        html2canvas(card, {
+            scale: 2, // استخدام مقياس أعلى (مثل 2) للحصول على دقة أعلى
+            logging: true, // تفعيل التنبيهات في Console لتشخيص الأخطاء
+            useCORS: true, // محاولة استخدام CORS (مطلوبة للصور المستضافة)
+        }).then(canvas => {
+            // إنشاء رابط تحميل للصورة
+            const link = document.createElement('a');
+            link.download = `بطاقة-${document.getElementById('inp-name').value || 'جديدة'}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            
+            // استعادة الأنماط الأصلية
+            card.style.zoom = originalZoom;
+            card.style.transform = originalTransform;
+        }).catch(error => {
+            // ** معالجة الأخطاء (هذا الجزء تم إضافته) **
+            console.error("فشل في تحميل البطاقة:", error);
+            alert("فشل في تحميل البطاقة. قد تكون المشكلة في الصورة الخلفية 'Card.png' إذا كنت تستخدم ملفًا محليًا. يرجى مراجعة وحدة التحكم (Console).");
+
+            // تأكد من استعادة الأنماط حتى في حالة الفشل
+            card.style.zoom = originalZoom;
+            card.style.transform = originalTransform;
+        });
+    }
+
+    // تشغيل التهيئة عند تحميل الصفحة
+    window.onload = applyDefaultLayout;
+</script>
+
+</body>
+</html>
