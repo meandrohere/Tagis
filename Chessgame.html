@@ -7,7 +7,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
+        /* ========================================
+        1. تعريف الخط الجديد هنا
+        ========================================
+        */
+        @font-face {
+            font-family: 'CustomCardFont';
+            src: url('T.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
+            /* يمكنك استخدام الخط في الصفحة كاملة إذا أردت بتغيير هذا السطر */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f2f5;
             display: flex;
@@ -35,6 +47,8 @@
             border-radius: 5px;
             box-sizing: border-box;
             font-size: 16px;
+            /* اختياري: إذا أردت أن يظهر الخط الجديد داخل خانات الكتابة أيضاً */
+            font-family: 'CustomCardFont', sans-serif;
         }
 
         button {
@@ -47,6 +61,7 @@
             font-size: 18px;
             width: 100%;
             font-weight: bold;
+            font-family: 'CustomCardFont', sans-serif; /* تطبيق الخط على الزر */
         }
         button:hover { background-color: #218838; }
 
@@ -82,7 +97,11 @@
         .card-text {
             color: white; 
             font-weight: bold;
-            font-family: Arial, sans-serif;
+            /* ========================================
+            2. تطبيق الخط الجديد على نصوص البطاقة
+            ========================================
+            */
+            font-family: 'CustomCardFont', Arial, sans-serif; 
             white-space: nowrap;
             text-shadow: 0 2px 4px rgba(0,0,0,0.8);
             line-height: 1;
@@ -150,43 +169,36 @@
 <script>
     /*
     ======================================
-    مركز الإعدادات الثابتة: عدّل هذه القيم لتغيير تصميم البطاقة 
-    (الموقع، الحجم، النصوص الافتراضية)
+    مركز الإعدادات الثابتة
     ======================================
     */
     const DEFAULT_LAYOUT = {
-        // نصوص البطاقة الافتراضية
         nameText: "اسم المشارك",
         numText: "000",
         
-        // إعدادات الاسم
-        nameX: "350px",    // الموقع الأفقي
-        nameY: "170px",    // الموقع العمودي
-        nameSize: "40px",  // حجم الخط
-        nameDirection: "rtl", // اتجاه النص
+        nameX: "350px",    
+        nameY: "170px",    
+        nameSize: "40px",  
+        nameDirection: "rtl", 
 
-        // إعدادات الرقم
-        numX: "114px",     // الموقع الأفقي
-        numY: "465px",     // الموقع العمودي
-        numSize: "50px",   // حجم الخط
+        numX: "114px",     
+        numY: "465px",     
+        numSize: "50px",   
         
-        // إعدادات الصورة
-        imgX: "650px",     // الموقع الأفقي
-        imgY: "240px",     // الموقع العمودي
-        imgSize: "250px"   // العرض والارتفاع
+        imgX: "650px",     
+        imgY: "240px",     
+        imgSize: "250px"   
     };
 
     function applyDefaultLayout() {
         const layout = DEFAULT_LAYOUT;
         
-        // تطبيق النصوص الافتراضية على حقول الإدخال والبطاقة
         document.getElementById('inp-name').value = layout.nameText;
         document.getElementById('card-name').innerText = layout.nameText;
         
         document.getElementById('inp-number').value = layout.numText;
         document.getElementById('card-number').innerText = layout.numText;
         
-        // تطبيق أنماط الاسم
         const nameEl = document.getElementById('card-name');
         nameEl.style.left = layout.nameX;
         nameEl.style.top = layout.nameY;
@@ -194,13 +206,11 @@
         nameEl.style.direction = layout.nameDirection;
         nameEl.style.textAlign = layout.nameDirection === 'rtl' ? 'right' : 'left'; 
 
-        // تطبيق أنماط الرقم
         const numEl = document.getElementById('card-number');
         numEl.style.left = layout.numX;
         numEl.style.top = layout.numY;
         numEl.style.fontSize = layout.numSize;
 
-        // تطبيق أنماط الصورة
         const imgWrapper = document.getElementById('profile-wrapper');
         imgWrapper.style.left = layout.imgX;
         imgWrapper.style.top = layout.imgY;
@@ -209,7 +219,6 @@
     }
 
     function updateCard() {
-        // تحديث النصوص فقط من حقول الإدخال
         const nameVal = document.getElementById('inp-name').value;
         const numVal = document.getElementById('inp-number').value;
 
@@ -232,48 +241,47 @@
 
     /*
     ======================================
-    دالة تحميل البطاقة (Download Card) - تم التعديل عليها
+    دالة التحميل
     ======================================
     */
     function downloadCard() {
         const card = document.getElementById('card-container');
         
-        // حفظ الأنماط الأصلية (للتجاوب مع الجوال)
         const originalZoom = card.style.zoom;
         const originalTransform = card.style.transform;
         
-        // إلغاء التصغير مؤقتاً للحصول على دقة عالية
         card.style.zoom = "1";
         card.style.transform = "none";
         
-        // استخدام html2canvas لتحويل العنصر إلى صورة
+        // إعدادات html2canvas لضمان ظهور الخطوط والصور
         html2canvas(card, {
-            scale: 2, // استخدام مقياس أعلى (مثل 2) للحصول على دقة أعلى
-            logging: true, // تفعيل التنبيهات في Console لتشخيص الأخطاء
-            useCORS: true, // محاولة استخدام CORS (مطلوبة للصور المستضافة)
+            scale: 2, 
+            logging: true,
+            useCORS: true, 
+            allowTaint: true, // قد يساعد في تحميل الخطوط المحلية
+            backgroundColor: null
         }).then(canvas => {
-            // إنشاء رابط تحميل للصورة
             const link = document.createElement('a');
             link.download = `بطاقة-${document.getElementById('inp-name').value || 'جديدة'}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
             
-            // استعادة الأنماط الأصلية
             card.style.zoom = originalZoom;
             card.style.transform = originalTransform;
         }).catch(error => {
-            // ** معالجة الأخطاء (هذا الجزء تم إضافته) **
-            console.error("فشل في تحميل البطاقة:", error);
-            alert("فشل في تحميل البطاقة. قد تكون المشكلة في الصورة الخلفية 'Card.png' إذا كنت تستخدم ملفًا محليًا. يرجى مراجعة وحدة التحكم (Console).");
-
-            // تأكد من استعادة الأنماط حتى في حالة الفشل
+            console.error("خطأ:", error);
+            alert("حدث خطأ أثناء تحميل البطاقة.");
             card.style.zoom = originalZoom;
             card.style.transform = originalTransform;
         });
     }
 
-    // تشغيل التهيئة عند تحميل الصفحة
-    window.onload = applyDefaultLayout;
+    // الانتظار حتى يتم تحميل الخطوط بالكامل قبل السماح بأي شيء (احتياطي)
+    document.fonts.ready.then(function () {
+        applyDefaultLayout();
+        console.log('Fonts loaded');
+    });
+
 </script>
 
 </body>
